@@ -55,6 +55,10 @@ The RL phase uses the SFT checkpoint and optimizes for correct answer generation
 
 View training metrics and loss curves at `http://<server-ip>:5000` (MLflow UI)
 
+## Results
+
+Training combines supervised fine-tuning (learning format from examples) with reinforcement learning (optimizing for correct answers via reward feedback). The model improves from baseline accuracy to better math reasoning performance over the training process.
+
 ## Architecture
 
 - **Shared volumes**: HuggingFace cache and model checkpoints are shared between containers to avoid redundant downloads
