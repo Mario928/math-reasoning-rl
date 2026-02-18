@@ -11,6 +11,8 @@ python3 -m verl.trainer.main_ppo \
     data.max_response_length=512 \
     actor_rollout_ref.model.path=/app/models/sft_qwen \
     actor_rollout_ref.actor.ppo_micro_batch_size_per_gpu=4 \
+    actor_rollout_ref.ref.log_prob_micro_batch_size_per_gpu=4 \
+    actor_rollout_ref.rollout.log_prob_micro_batch_size_per_gpu=4 \
     critic.model.path=/app/models/sft_qwen \
     critic.ppo_micro_batch_size_per_gpu=4 \
     trainer.n_gpus_per_node=$N_GPUS \
