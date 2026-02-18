@@ -10,7 +10,11 @@ services:
       - models:/app/models
       - datasets:/app/data
       - ./run_ppo.sh:/workspace/run_ppo.sh
-    command: sleep infinity
+    command: >
+      bash -c "git clone https://github.com/volcengine/verl /tmp/verl 2>/dev/null;
+               pip install --no-deps -e /tmp/verl -q;
+               pip install 'numpy>=2.0,<2.3' -q;
+               sleep infinity"
 
   jupyter:
     image: pytorch/pytorch:2.7.1-cuda12.6-cudnn9-devel
