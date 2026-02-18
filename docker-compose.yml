@@ -2,7 +2,7 @@ version: '3.8'
 
 services:
   verl:
-    image: verl/verl:0.5-cu126-torch2.7.1-fa2.8.0
+    image: verlai/verl:vllm011.latest
     container_name: verl
     runtime: nvidia
     shm_size: 32gb
