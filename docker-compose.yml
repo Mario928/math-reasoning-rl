@@ -6,6 +6,7 @@ services:
     container_name: verl
     runtime: nvidia
     shm_size: 32gb
+    entrypoint: ""
     volumes:
       - hf_cache:/root/.cache/huggingface
       - models:/app/models
