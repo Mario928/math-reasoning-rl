@@ -37,6 +37,20 @@ Open Jupyter at `http://<server-ip>:8888` and run `sft_training.ipynb`.
 
 This fine-tunes the base model on GSM8K question-answer pairs and saves the checkpoint to the shared models volume at `/app/models/sft_qwen`.
 
+After SFT, fix the tokenizer format (the Jupyter container saves `extra_special_tokens` as a list, but the VERL container's newer transformers expects a dict):
+```bash
+docker exec verl python3 -c "
+import json
+path = '/app/models/sft_qwen/tokenizer_config.json'
+with open(path) as f: cfg = json.load(f)
+if isinstance(cfg.get('extra_special_tokens', []), list):
+    cfg['extra_special_tokens'] = {t: t for t in cfg['extra_special_tokens']}
+    with open(path, 'w') as f: json.dump(cfg, f, indent=2, ensure_ascii=False)
+    print('Fixed')
+else: print('Already OK')
+"
+```
+
 ### 2. Preprocess GSM8K for RL
 
 ```bash
