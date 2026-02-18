@@ -1,4 +1,8 @@
 #!/bin/bash
+# PPO training script for Qwen 2.5 0.5B on GSM8K
+# Based on official VERL quickstart: https://verl.readthedocs.io/en/latest/start/quickstart.html
+
+set -x
 
 export MLFLOW_TRACKING_URI=http://mlflow:5000
 
@@ -21,12 +25,12 @@ PYTHONUNBUFFERED=1 python3 -m verl.trainer.main_ppo \
     critic.model.path=/app/models/sft_qwen \
     critic.ppo_micro_batch_size_per_gpu=4 \
     algorithm.kl_ctrl.kl_coef=0.001 \
-    trainer.logger='["mlflow"]' \
+    trainer.val_before_train=False \
+    trainer.logger='["console","mlflow"]' \
     trainer.project_name=verl_gsm8k \
     trainer.experiment_name=ppo_qwen_0.5b \
-    trainer.val_before_train=False \
     trainer.n_gpus_per_node=1 \
     trainer.nnodes=1 \
     trainer.save_freq=10 \
     trainer.test_freq=10 \
-    trainer.total_epochs=15 2>&1 | tee /tmp/ppo.log
+    trainer.total_epochs=15
