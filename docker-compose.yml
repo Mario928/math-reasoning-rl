@@ -25,14 +25,16 @@ services:
       - models:/app/models
       - ./notebooks:/workspace/notebooks
     command: >
-      bash -c "pip install jupyter transformers datasets accelerate peft trl mlflow &&
+      bash -c "pip install jupyter transformers datasets accelerate peft trl mlflow==3.9.0 &&
                jupyter notebook --ip=0.0.0.0 --port=8888 --no-browser --allow-root --NotebookApp.token=''"
 
   mlflow:
-    image: ghcr.io/mlflow/mlflow:v2.10.2
+    image: ghcr.io/mlflow/mlflow:v3.9.0
     container_name: mlflow
     ports:
       - "5000:5000"
+    environment:
+      - MLFLOW_SERVER_ALLOWED_HOSTS=*
     volumes:
       - mlflow_data:/mlflow
     command: mlflow server --host 0.0.0.0 --port 5000 --backend-store-uri /mlflow
