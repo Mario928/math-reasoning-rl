@@ -28,7 +28,7 @@ services:
       - models:/app/models
       - ./notebooks:/workspace/notebooks
     command: >
-      bash -c "pip install jupyter transformers datasets accelerate peft trl mlflow==3.9.0 &&
+      bash -c "pip install jupyter transformers==4.57.1 datasets accelerate peft trl mlflow==3.9.0 &&
                jupyter notebook --ip=0.0.0.0 --port=8888 --no-browser --allow-root --NotebookApp.token=''"
 
   mlflow:

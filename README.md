@@ -42,21 +42,7 @@ Services:
 
 Open Jupyter at `http://<server-ip>:8888` and run `notebooks/sft_training.ipynb`.
 
-This fine-tunes the base Qwen 2.5 0.5B model on GSM8K question-answer pairs and saves the checkpoint to `/app/models/sft_qwen` (shared volume between containers).
-
-After SFT completes, fix the tokenizer format for compatibility with the VERL container:
-```bash
-docker exec verl python3 -c "
-import json
-path = '/app/models/sft_qwen/tokenizer_config.json'
-with open(path) as f: cfg = json.load(f)
-if isinstance(cfg.get('extra_special_tokens', []), list):
-    cfg['extra_special_tokens'] = {t: t for t in cfg['extra_special_tokens']}
-    with open(path, 'w') as f: json.dump(cfg, f, indent=2, ensure_ascii=False)
-    print('Fixed')
-else: print('Already OK')
-"
-```
+This fine-tunes the base Qwen 2.5 0.5B model on GSM8K question-answer pairs and saves the checkpoint to `/app/models/sft_qwen` (shared volume between containers). The Jupyter container pins `transformers==4.57.1` to match the VERL container, ensuring tokenizer compatibility.
 
 ### 2. Preprocess GSM8K for RL
 
