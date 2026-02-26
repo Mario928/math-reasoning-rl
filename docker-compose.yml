@@ -10,6 +10,7 @@ services:
       - models:/app/models
       - datasets:/app/data
       - ./run_ppo.sh:/workspace/run_ppo.sh
+      - ./run_ppo_v2.sh:/workspace/run_ppo_v2.sh
     command: >
       bash -c "git clone https://github.com/volcengine/verl /tmp/verl 2>/dev/null;
                pip install --no-deps -e /tmp/verl -q;
