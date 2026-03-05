@@ -135,7 +135,7 @@ torchrun --standalone --nnodes=1 --nproc_per_node=1 \
     data.train_files=/app/data/gsm8k_sft/train.parquet \
     data.val_files=/app/data/gsm8k_sft/test.parquet \
     data.messages_key=messages \
-    data.micro_batch_size=4 \
+    data.micro_batch_size_per_gpu=4 \
     optim.lr=1e-4 \
     engine=fsdp \
     model.path=Qwen/Qwen2.5-0.5B-Instruct \
