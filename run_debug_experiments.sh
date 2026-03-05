@@ -143,7 +143,8 @@ torchrun --standalone --nnodes=1 --nproc_per_node=1 \
     trainer.project_name=gsm8k-sft \
     trainer.experiment_name=gsm8k-sft-verl-format \
     trainer.logger=console \
-    trainer.total_epochs=1
+    trainer.total_epochs=1 \
+    'checkpoint.save_contents=["model","optimizer","extra","hf_model"]'
 
 # ---- Step 3: Find the saved SFT model path ----
 # VERL saves to default_local_dir/global_step_XXX/huggingface/
