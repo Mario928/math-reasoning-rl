@@ -9,12 +9,7 @@ services:
       - hf_cache:/root/.cache/huggingface
       - models:/app/models
       - datasets:/app/data
-      - ./run_ppo.sh:/workspace/run_ppo.sh
-      - ./run_ppo_v2.sh:/workspace/run_ppo_v2.sh
-      - ./run_grpo.sh:/workspace/run_grpo.sh
-      - ./run_debug_experiments.sh:/workspace/run_debug_experiments.sh
-      - ./run_sft_sweep.sh:/workspace/run_sft_sweep.sh
-      - ./eval_base_model.py:/workspace/eval_base_model.py
+      - .:/workspace
     command: >
       bash -c "git clone https://github.com/volcengine/verl /tmp/verl 2>/dev/null;
                pip install --no-deps -e /tmp/verl -q;
