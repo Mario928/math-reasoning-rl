@@ -188,6 +188,7 @@ def evaluate_config(model, tokenizer, dataset, config_name, build_fn):
         responses.append({
             "index": i,
             "question": question,
+            "prompt": prompt,
             "ground_truth": gt,
             "response": response,
             "pred_strict": pred_strict,
