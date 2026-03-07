@@ -64,14 +64,33 @@ Training runs 15 epochs (~435 steps, ~3-4 hours on H100). The RL phase uses the 
 
 ### 4. Merge Checkpoint (after training)
 
+VERL saves FSDP checkpoints during training. To convert to a HuggingFace model:
 ```bash
+# Find the latest checkpoint
+docker exec verl find / -path "*/global_step_*/actor" -type d 2>/dev/null
+
+# Merge it
 docker exec verl python3 -m verl.model_merger merge \
     --backend fsdp \
-    --local_dir /home/dpsk_a2a/DeepEP/checkpoints/verl_gsm8k/ppo_qwen_0.5b/global_step_<N>/actor \
+    --local_dir <path_from_above> \
     --target_dir /app/models/ppo_qwen
 ```
 
-Replace `<N>` with the latest checkpoint step number.
+## Other Experiments
+
+All scripts are mounted at `/workspace/` inside the verl container:
+
+- **`run_ppo_v2.sh`** — PPO directly on base Instruct model (no SFT). Result: 54.1%
+- **`run_grpo.sh`** — GRPO on base Instruct model. Result: 57.9%
+- **`run_debug_experiments.sh`** — Save/load sanity check + correct-format SFT then PPO. Result: 37.5%
+- **`run_sft_sweep.sh`** — SFT hyperparameter sweep (4 configs varying LR and epochs)
+- **`eval_base_model.py`** — Standalone base model evaluation on full GSM8K test set
+
+Run any of them:
+```bash
+docker exec -d verl bash -c 'PYTHONUNBUFFERED=1 bash /workspace/<script>.sh > /tmp/<script>.log 2>&1'
+docker exec verl tail -50 /tmp/<script>.log
+```
 
 ## Monitoring
 
