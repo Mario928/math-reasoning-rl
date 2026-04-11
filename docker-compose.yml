@@ -1,21 +1,18 @@
 services:
   verl:
-    image: verlai/verl:vllm011.latest
+    build: .
+    image: toolrl-verl:latest
     container_name: verl
     runtime: nvidia
     shm_size: 32gb
-    entrypoint: ""
     environment:
       - MLFLOW_TRACKING_URI=http://mlflow:5000
+      - PYTHONUNBUFFERED=1
     volumes:
       - hf_cache:/root/.cache/huggingface
       - models:/app/models
-      - datasets:/app/data
       - .:/workspace
-    command: >
-      bash -c "pip install --no-deps -e /workspace -q;
-               pip install 'numpy>=2.0,<2.3' -q;
-               sleep infinity"
+    command: sleep infinity
 
   mlflow:
     image: ghcr.io/mlflow/mlflow:v3.9.0
