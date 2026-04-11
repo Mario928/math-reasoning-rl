@@ -49,6 +49,7 @@ class Tracking(object):
 
         if 'mlflow' in default_backend:
             import mlflow
+            mlflow.set_experiment(project_name)
             mlflow.start_run(run_name=experiment_name)
             mlflow.log_params(_compute_mlflow_params_from_objects(config))
             self.logger['mlflow'] = _MlflowLoggingAdapter()
