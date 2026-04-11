@@ -22,6 +22,6 @@ RUN pip install flash-attn --no-build-isolation
 
 # Install local verl with ToolRL reward functions
 COPY . /workspace
-RUN pip install -e /workspace
+RUN pip install -e /workspace && pip install mlflow
 
 CMD ["sleep", "infinity"]
