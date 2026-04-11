@@ -15,5 +15,5 @@ export SCHEDULELENGTH=0
 
 export DATA_DIR="./dataset/rlla_4k"
 export BASE_MODEL="Qwen/Qwen2.5-1.5B-Instruct"
-export EXPERIMENT_NAME="/app/models/toolrl-ppo-1.5b"
+export EXPERIMENT_NAME="/app/models/toolrl-ppo-qwen-1.5b"
 bash ./examples/ppo_trainer/run_ppo.sh
