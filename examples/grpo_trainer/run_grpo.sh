@@ -25,11 +25,11 @@ python3 -m verl.trainer.main_ppo \
     actor_rollout_ref.ref.fsdp_config.param_offload=True \
     algorithm.kl_ctrl.kl_coef=0.001 \
     trainer.critic_warmup=0 \
-    trainer.logger=['console','wandb'] \
-    trainer.project_name=TinyZero \
-    trainer.experiment_name=$EXPERIMENT_NAME \
+    trainer.logger='["console","mlflow"]' \
+    trainer.project_name=toolrl \
+    trainer.experiment_name=grpo_qwen_1.5b \
     trainer.n_gpus_per_node=$N_GPUS \
     trainer.nnodes=1 \
     trainer.save_freq=15 \
     trainer.test_freq=5 \
-    trainer.total_epochs=1
+    trainer.total_epochs=15

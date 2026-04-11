@@ -1,0 +1,43 @@
+services:
+  verl:
+    image: verlai/verl:vllm011.latest
+    container_name: verl
+    runtime: nvidia
+    shm_size: 32gb
+    entrypoint: ""
+    environment:
+      - MLFLOW_TRACKING_URI=http://mlflow:5000
+    volumes:
+      - hf_cache:/root/.cache/huggingface
+      - models:/app/models
+      - datasets:/app/data
+      - .:/workspace
+    command: >
+      bash -c "pip install --no-deps -e /workspace -q;
+               pip install 'numpy>=2.0,<2.3' -q;
+               sleep infinity"
+
+  mlflow:
+    image: ghcr.io/mlflow/mlflow:v3.9.0
+    container_name: mlflow
+    ports:
+      - "5000:5000"
+    environment:
+      - MLFLOW_SERVER_ALLOWED_HOSTS=*
+    volumes:
+      - mlflow_data:/mlflow
+    command: mlflow server --host 0.0.0.0 --port 5000 --backend-store-uri /mlflow
+
+volumes:
+  hf_cache:
+    name: math-reasoning-rl_hf_cache
+    external: true
+  models:
+    name: math-reasoning-rl_models
+    external: true
+  datasets:
+    name: math-reasoning-rl_datasets
+    external: true
+  mlflow_data:
+    name: math-reasoning-rl_mlflow_data
+    external: true
