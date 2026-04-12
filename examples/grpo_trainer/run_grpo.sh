@@ -27,6 +27,7 @@ python3 -m verl.trainer.main_ppo \
     trainer.critic_warmup=0 \
     trainer.logger='["console","mlflow"]' \
     trainer.project_name=toolrl \
+    trainer.default_local_dir=$EXPERIMENT_NAME \
     trainer.experiment_name=grpo_qwen_1.5b \
     trainer.n_gpus_per_node=$N_GPUS \
     trainer.nnodes=1 \
