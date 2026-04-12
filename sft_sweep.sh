@@ -91,7 +91,7 @@ run_worker() {
             trainer.total_epochs=$EPOCHS \
             trainer.logger=['console'] \
             optim.lr=$LR \
-            > "$LOG_FILE" 2>&1
+            > "$LOG_FILE" 2>&1 || true
 
         # API-Bank eval
         APIBANK_OUT="${RESULTS_DIR}/apibank_${RUN_NAME}.json"
