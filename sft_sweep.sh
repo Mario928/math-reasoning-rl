@@ -89,7 +89,7 @@ run_worker() {
             trainer.project_name=toolrl-sft-sweep \
             trainer.experiment_name=$RUN_NAME \
             trainer.total_epochs=$EPOCHS \
-            trainer.logger=['console','mlflow'] \
+            trainer.logger=['console'] \
             optim.lr=$LR \
             > "$LOG_FILE" 2>&1
 
