@@ -41,9 +41,15 @@ run_worker() {
         run_name=$(basename "$ckpt_path")
         echo "[GPU $gpu_id] Evaluating: $run_name"
 
+        # SFT checkpoints are saved under global_step_N/ — find it
+        model_path=$(ls -d "${ckpt_path}"/global_step_* 2>/dev/null | tail -1)
+        if [ -z "$model_path" ]; then
+            echo "  [GPU $gpu_id SKIP] no global_step dir found in: $run_name"
+            continue
+        fi
+
         # Check if already done (score.json exists)
-        # generate.py mangles path: replaces "/" with "_", no "TinyZero/" prefix to strip
-        mangled_name=$(echo "$ckpt_path" | tr '/' '_')
+        mangled_name=$(echo "$model_path" | tr '/' '_')
         score_file="$APIBANK_DIR/PATH_TO_YOUR_SCORE_ROOT/${mangled_name}/score.json"
         if [ -f "$score_file" ]; then
             echo "  [GPU $gpu_id SKIP] already evaluated: $run_name"
@@ -52,7 +58,7 @@ run_worker() {
 
         # generate.py must run from API-Bank dir (reads ./level-*.json relative paths)
         cd "$APIBANK_DIR"
-        python generate.py --model_paths "$ckpt_path" || true
+        python generate.py --model_paths "$model_path" || true
         echo "  [GPU $gpu_id] generate done: $run_name"
     done
 
@@ -74,8 +80,13 @@ echo "============================================================"
 echo "All generate done. Running evaluate + leaderboard..."
 echo "============================================================"
 
-# Run evaluate.py for all checkpoints (scores + leaderboard.json)
-CKPT_LIST=$(IFS=,; echo "${CKPTS[*]}")
+# Run evaluate.py — pass global_step_* paths (where config.json actually lives)
+MODEL_PATHS=()
+for ckpt in "${CKPTS[@]}"; do
+    model_path=$(ls -d "${ckpt}"/global_step_* 2>/dev/null | tail -1)
+    [ -n "$model_path" ] && MODEL_PATHS+=("$model_path")
+done
+CKPT_LIST=$(IFS=,; echo "${MODEL_PATHS[*]}")
 cd "$APIBANK_DIR"
 python evaluate.py --model_paths "$CKPT_LIST"
 
@@ -107,9 +118,14 @@ for run_name in sorted(os.listdir(CHECKPOINT_DIR)):
         continue
     lr, max_len, epochs, batch = m.group(1), m.group(2), m.group(3), m.group(4)
 
-    # leaderboard key = mangled full path (generate.py does path.replace("/","_"))
+    # leaderboard key = mangled global_step path (generate.py does path.replace("/","_"))
     ckpt_path = os.path.join(CHECKPOINT_DIR, run_name)
-    mangled = ckpt_path.replace("/", "_")
+    global_steps = sorted([d for d in os.listdir(ckpt_path) if d.startswith("global_step_")])
+    if not global_steps:
+        rows.append([run_name, lr, max_len, epochs, batch, "", "", "", "", "", "", "", "", "", "", ""])
+        continue
+    model_path = os.path.join(ckpt_path, global_steps[-1])
+    mangled = model_path.replace("/", "_")
     scores = leaderboard.get(mangled, {})
     overall = scores.get("overall_acc", "")
     lv1 = scores.get("lv1_acc", "")
