@@ -72,6 +72,12 @@ run_worker() {
             continue
         fi
 
+        # Reduce micro batch for high-LR + long-seq configs to avoid OOM
+        EFFECTIVE_MICRO_BATCH=$MICRO_BATCH
+        if [ "$MAX_LEN" = "4096" ] && [ "$LR" = "5e-5" ]; then
+            EFFECTIVE_MICRO_BATCH=4
+        fi
+
         # Train (Single Node, Single Process per worker)
         torchrun --standalone --nnodes=1 --nproc_per_node=1 \
             -m verl.trainer.fsdp_sft_trainer \
@@ -82,7 +88,7 @@ run_worker() {
             data.max_length=$MAX_LEN \
             data.truncation=right \
             data.train_batch_size=$BATCH \
-            data.micro_batch_size=$MICRO_BATCH \
+            data.micro_batch_size=$EFFECTIVE_MICRO_BATCH \
             model.partial_pretrain=$BASE_MODEL \
             model.enable_gradient_checkpointing=True \
             trainer.default_local_dir=$CKPT_PATH \
