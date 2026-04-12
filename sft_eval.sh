@@ -42,7 +42,9 @@ run_worker() {
         echo "[GPU $gpu_id] Evaluating: $run_name"
 
         # Check if already done (score.json exists)
-        score_file="$APIBANK_DIR/PATH_TO_YOUR_SCORE_ROOT/${run_name}/score.json"
+        # generate.py mangles path: replaces "/" with "_", no "TinyZero/" prefix to strip
+        mangled_name=$(echo "$ckpt_path" | tr '/' '_')
+        score_file="$APIBANK_DIR/PATH_TO_YOUR_SCORE_ROOT/${mangled_name}/score.json"
         if [ -f "$score_file" ]; then
             echo "  [GPU $gpu_id SKIP] already evaluated: $run_name"
             continue
@@ -105,8 +107,10 @@ for run_name in sorted(os.listdir(CHECKPOINT_DIR)):
         continue
     lr, max_len, epochs, batch = m.group(1), m.group(2), m.group(3), m.group(4)
 
-    # Get API-Bank scores from leaderboard
-    scores = leaderboard.get(run_name, {})
+    # leaderboard key = mangled full path (generate.py does path.replace("/","_"))
+    ckpt_path = os.path.join(CHECKPOINT_DIR, run_name)
+    mangled = ckpt_path.replace("/", "_")
+    scores = leaderboard.get(mangled, {})
     overall = scores.get("overall_acc", "")
     lv1 = scores.get("lv1_acc", "")
     lv2 = scores.get("lv2_acc", "")
