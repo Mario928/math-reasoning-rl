@@ -21,6 +21,7 @@ import argparse
 import json
 import os
 import re
+import shutil
 import subprocess
 
 import mlflow
@@ -118,6 +119,22 @@ def _parse_val_loss(log_file):
     return val_loss
 
 
+# ── checkpoint cleanup ─────────────────────────────────────────────────────────
+
+def delete_intermediate_checkpoints(ckpt_dir):
+    """Delete all but the final global_step_N subdir to save disk space."""
+    subdirs = sorted([d for d in os.listdir(ckpt_dir) if d.startswith("global_step_")],
+                     key=lambda d: int(d.split("_")[-1]))
+    for d in subdirs[:-1]:  # keep only last
+        shutil.rmtree(os.path.join(ckpt_dir, d), ignore_errors=True)
+        print(f"[cleanup] deleted intermediate: {d}")
+
+def delete_checkpoint(ckpt_dir):
+    """Delete entire checkpoint dir (used in Optuna when trial is not best)."""
+    shutil.rmtree(ckpt_dir, ignore_errors=True)
+    print(f"[cleanup] deleted checkpoint: {ckpt_dir}")
+
+
 # ── API-Bank evaluation ────────────────────────────────────────────────────────
 
 def run_apibank_eval(ckpt_dir):
@@ -190,6 +207,8 @@ def single_run(args):
             mlflow.set_tag("status", "train_failed")
             print(f"[ERROR] training failed (exit {rc})")
             return
+
+        delete_intermediate_checkpoints(ckpt_dir)  # keep only final epoch
 
         scores = run_apibank_eval(ckpt_dir)
         if scores:
