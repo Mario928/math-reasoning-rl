@@ -66,7 +66,7 @@ BEST_CONFIG = {
 
 def run_training(model_size, dataset_size, lr, max_length, epochs,
                  batch_size, micro_batch_size, warmup_steps_ratio,
-                 weight_decay, run_name, log_file):
+                 weight_decay, run_name, log_file, mlflow_experiment):
     """Launch fsdp_sft_trainer via torchrun (4 GPUs). Returns (returncode, val_loss, ckpt_dir)."""
 
     ckpt_dir = f"{CHECKPOINT_ROOT}/{run_name}"
@@ -86,7 +86,7 @@ def run_training(model_size, dataset_size, lr, max_length, epochs,
         f"model.partial_pretrain={MODEL_PATHS[model_size]}",
         "model.enable_gradient_checkpointing=True",
         f"trainer.default_local_dir={ckpt_dir}",
-        "trainer.project_name=toolrl-sft",
+        f"trainer.project_name={mlflow_experiment}",
         f"trainer.experiment_name={run_name}",
         f"trainer.total_epochs={epochs}",
         "trainer.logger=['mlflow']",
@@ -188,7 +188,8 @@ def single_run(args):
     results_dir  = f"{RESULTS_ROOT}/{args.model}_{args.dataset}"
     os.makedirs(results_dir, exist_ok=True)
 
-    mlflow.set_experiment(f"toolrl-sft-{args.model}-{args.dataset}")
+    experiment_name = f"toolrl-sft-{args.model}-{args.dataset}"
+    mlflow.set_experiment(experiment_name)
 
     with mlflow.start_run(run_name=run_name):
         mlflow.log_params({**cfg, "model": args.model, "dataset": args.dataset, "mode": "single_best"})
@@ -196,6 +197,7 @@ def single_run(args):
         rc, val_loss, ckpt_dir = run_training(
             model_size=args.model, dataset_size=args.dataset,
             run_name=run_name, log_file=f"{results_dir}/{run_name}.log",
+            mlflow_experiment=experiment_name,
             **{k: cfg[k] for k in ["lr", "max_length", "epochs", "batch_size",
                                     "micro_batch_size", "warmup_steps_ratio", "weight_decay"]},
         )
@@ -259,6 +261,7 @@ def optuna_sweep(args):
                 batch_size=batch_size, micro_batch_size=micro_batch_size,
                 warmup_steps_ratio=warmup_steps_ratio, weight_decay=weight_decay,
                 run_name=run_name, log_file=log_file,
+                mlflow_experiment=study_name,
             )
 
             if val_loss is not None:
