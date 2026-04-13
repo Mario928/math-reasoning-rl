@@ -48,9 +48,10 @@ class Tracking(object):
             self.logger['wandb'] = wandb
 
         if 'mlflow' in default_backend:
-            import mlflow
+            import mlflow, os
             mlflow.set_experiment(project_name)
-            mlflow.start_run(run_name=experiment_name)
+            _run_id = os.environ.get('MLFLOW_RUN_ID')
+            mlflow.start_run(run_id=_run_id, run_name=experiment_name if _run_id is None else None)
             mlflow.log_params(_compute_mlflow_params_from_objects(config))
             self.logger['mlflow'] = _MlflowLoggingAdapter()
 
