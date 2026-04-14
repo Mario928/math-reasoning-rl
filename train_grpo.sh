@@ -14,6 +14,6 @@ export SCHEDULEREWARD=0
 export SCHEDULELENGTH=0
 
 export DATA_DIR="./dataset/rlla_4k"
-export BASE_MODEL="Qwen/Qwen2.5-1.5B-Instruct"
-export EXPERIMENT_NAME="/app/models/toolrl-grpo-qwen-1.5b"
+export BASE_MODEL="/workspace/sweep_checkpoints/qwen2.5-1.5b/sft_lr5e-5_len4096_ep5_bs64/global_step_25"
+export EXPERIMENT_NAME="/app/models/toolrl-grpo-sft400-qwen-1.5b"
 bash ./examples/grpo_trainer/run_grpo.sh
