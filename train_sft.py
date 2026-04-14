@@ -245,11 +245,12 @@ def optuna_sweep(args):
     best_ckpt  = [None]
 
     def objective(trial):
-        lr                 = trial.suggest_float("lr", 1e-6, 5e-4, log=True)
+        is_4k = args.dataset == "4k"
+        lr                 = trial.suggest_float("lr", 1e-6, 1e-4 if is_4k else 5e-4, log=True)
         max_length         = trial.suggest_categorical("max_length", [1024, 2048, 4096])
-        epochs             = trial.suggest_int("epochs", 1, 10)
-        batch_size         = trial.suggest_categorical("batch_size", [16, 32, 64, 128])
-        warmup_steps_ratio = trial.suggest_float("warmup_steps_ratio", 0.0, 0.15)
+        epochs             = trial.suggest_int("epochs", 1, 6 if is_4k else 7)
+        batch_size         = trial.suggest_categorical("batch_size", [16, 32, 64, 128] if is_4k else [16, 32, 64])
+        warmup_steps_ratio = trial.suggest_float("warmup_steps_ratio", 0.0, 0.1)
         weight_decay       = trial.suggest_float("weight_decay", 0.0, 0.1)
         micro_batch_size   = 4 if max_length >= 4096 else 8   # avoid OOM
 
