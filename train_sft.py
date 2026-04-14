@@ -286,6 +286,7 @@ def optuna_sweep(args):
                 delete_checkpoint(ckpt_dir)
                 return 0.0
 
+            delete_intermediate_checkpoints(ckpt_dir)  # keep only final epoch, save disk
             time.sleep(10)  # let GPU memory fully release after torchrun before vLLM starts
             scores = run_apibank_eval(ckpt_dir)
             if scores is None:
@@ -312,8 +313,6 @@ def optuna_sweep(args):
     study = optuna.create_study(
         study_name=study_name,
         direction="maximize",
-        storage=f"sqlite:///{results_dir}/optuna.db",
-        load_if_exists=True,   # resume safely if interrupted
     )
     study.optimize(objective, n_trials=args.n_trials)
 
