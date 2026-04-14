@@ -146,9 +146,10 @@ def run_apibank_eval(ckpt_dir):
     model_path = os.path.join(ckpt_dir, subdirs[-1])
 
     print(f"[eval] generate.py on {model_path}")
+    eval_env = {**os.environ, "WORLD_SIZE": "4"}
     rc = subprocess.run(
         ["python", "generate.py", "--model_paths", model_path],
-        cwd=APIBANK_DIR,
+        cwd=APIBANK_DIR, env=eval_env,
     ).returncode
     if rc != 0:
         print("[eval] generate.py failed")
