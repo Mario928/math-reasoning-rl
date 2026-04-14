@@ -23,6 +23,7 @@ import os
 import re
 import shutil
 import subprocess
+import time
 
 import mlflow
 
@@ -220,6 +221,7 @@ def single_run(args):
 
         delete_intermediate_checkpoints(ckpt_dir)  # keep only final epoch
 
+        time.sleep(10)  # let GPU memory fully release after torchrun before vLLM starts
         scores = run_apibank_eval(ckpt_dir)
         if scores:
             mlflow.log_metrics(scores)
@@ -284,6 +286,7 @@ def optuna_sweep(args):
                 delete_checkpoint(ckpt_dir)
                 return 0.0
 
+            time.sleep(10)  # let GPU memory fully release after torchrun before vLLM starts
             scores = run_apibank_eval(ckpt_dir)
             if scores is None:
                 mlflow.set_tag("status", "eval_failed")
