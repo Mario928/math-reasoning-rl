@@ -281,11 +281,13 @@ def optuna_sweep(args):
 
             if rc != 0:
                 mlflow.set_tag("status", "train_failed")
+                delete_checkpoint(ckpt_dir)
                 return 0.0
 
             scores = run_apibank_eval(ckpt_dir)
             if scores is None:
                 mlflow.set_tag("status", "eval_failed")
+                delete_checkpoint(ckpt_dir)
                 return 0.0
 
             mlflow.log_metrics(scores)
