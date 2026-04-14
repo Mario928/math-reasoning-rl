@@ -138,21 +138,28 @@ def delete_checkpoint(ckpt_dir):
 # ── API-Bank evaluation ────────────────────────────────────────────────────────
 
 def run_apibank_eval(ckpt_dir):
-    """Run generate.py + evaluate.py. Returns metrics dict or None on failure."""
+    """Run generate_batch.py + evaluate.py. Returns metrics dict or None on failure."""
     subdirs = sorted([d for d in os.listdir(ckpt_dir) if d.startswith("global_step_")])
     if not subdirs:
         print(f"[eval] no global_step dir in {ckpt_dir}")
         return None
     model_path = os.path.join(ckpt_dir, subdirs[-1])
 
-    print(f"[eval] generate.py on {model_path}")
+    # Delete any stale result folder to avoid resuming from corrupt partial results
+    mangled = model_path.replace("/", "_")
+    stale_result_dir = os.path.join(APIBANK_DIR, "PATH_TO_YOUR_SCORE_ROOT", mangled)
+    if os.path.exists(stale_result_dir):
+        shutil.rmtree(stale_result_dir)
+        print(f"[eval] deleted stale result folder: {stale_result_dir}")
+
+    print(f"[eval] generate_batch.py on {model_path}")
     eval_env = {**os.environ, "WORLD_SIZE": "4"}
     rc = subprocess.run(
-        ["python", "generate.py", "--model_paths", model_path],
+        ["python", "generate_batch.py", "--model_paths", model_path],
         cwd=APIBANK_DIR, env=eval_env,
     ).returncode
     if rc != 0:
-        print("[eval] generate.py failed")
+        print("[eval] generate_batch.py failed")
         return None
 
     print("[eval] evaluate.py")
@@ -234,6 +241,9 @@ def optuna_sweep(args):
 
     mlflow.set_experiment(study_name)
 
+    best_score = [0.0]   # mutable so inner function can update it
+    best_ckpt  = [None]
+
     def objective(trial):
         lr                 = trial.suggest_float("lr", 1e-6, 5e-4, log=True)
         max_length         = trial.suggest_categorical("max_length", [1024, 2048, 4096])
@@ -279,8 +289,19 @@ def optuna_sweep(args):
 
             mlflow.log_metrics(scores)
             mlflow.set_tag("status", "done")
-            print(f"\n[trial {trial.number}] API-Bank: {scores['api_bank_overall']:.2f}%  val_loss: {val_loss}")
-            return scores["api_bank_overall"]
+            score = scores["api_bank_overall"]
+            print(f"\n[trial {trial.number}] API-Bank: {score:.2f}%  val_loss: {val_loss}")
+
+            # Keep only the best checkpoint across all trials to save disk space
+            if score > best_score[0]:
+                if best_ckpt[0] is not None:
+                    delete_checkpoint(best_ckpt[0])
+                best_score[0] = score
+                best_ckpt[0]  = ckpt_dir
+            else:
+                delete_checkpoint(ckpt_dir)
+
+            return score
 
     study = optuna.create_study(
         study_name=study_name,
@@ -294,6 +315,7 @@ def optuna_sweep(args):
     print(f"\n{'='*60}")
     print(f"Best trial {best.number}: API-Bank={best.value:.2f}%")
     print(f"Best params: {best.params}")
+    print(f"Best checkpoint: {best_ckpt[0]}")
 
 
 # ── main ───────────────────────────────────────────────────────────────────────
