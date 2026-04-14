@@ -22,6 +22,7 @@ import json
 import os
 import re
 import shutil
+import signal
 import subprocess
 import time
 
@@ -102,7 +103,19 @@ def run_training(model_size, dataset_size, lr, max_length, epochs,
 
     print(f"\n[train] {run_name}  log -> {log_file}")
     with open(log_file, "w") as f:
-        rc = subprocess.run(cmd, env=env, stdout=f, stderr=subprocess.STDOUT).returncode
+        proc = subprocess.Popen(cmd, env=env, stdout=f, stderr=subprocess.STDOUT,
+                                start_new_session=True)
+        pgid = os.getpgid(proc.pid)   # grab BEFORE wait() — process gone after
+        rc = proc.wait()
+
+    # Kill entire process group to free GPU memory before vLLM eval.
+    # torchrun workers linger after parent exits, holding ~64GB GPU memory.
+    print(f"[train] done (rc={rc}), killing process group {pgid} to free GPU memory...")
+    try:
+        os.killpg(pgid, signal.SIGTERM)
+        time.sleep(5)   # give workers time to exit cleanly
+    except ProcessLookupError:
+        pass  # already gone — normal if workers cleaned up on their own
 
     return rc, _parse_val_loss(log_file), ckpt_dir
 
