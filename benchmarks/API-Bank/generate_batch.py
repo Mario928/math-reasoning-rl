@@ -94,7 +94,7 @@ if __name__ == "__main__":
                 results[gold] = {"data": data, "raw_output": "", "thought": "", "tool_calls": []}
                 log["fail"] += 1
 
-        with open(result_save_path, "w") as f:
+        with open(result_save_path, "w", encoding="utf-8") as f:
             json.dump(results, f, indent=4, ensure_ascii=False)
 
         print(f"Done. {log}")
