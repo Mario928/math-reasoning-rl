@@ -35,7 +35,7 @@ This branch (`toolrl-reproduction`) contains our full reproduction of the ToolRL
 | Raw (no training) | 51.59% | 33.84% |
 | SFT400 | 52.76% | 56.78% |
 | SFT400 + GRPO (warm) | 62.48% | 54.61% |
-| SFT400 + PPO (warm) | 65.16% | — |
+| SFT400 + PPO (warm) | 65.16% | 59.46% |
 | GRPO Cold Start | 67.00% | 62.98% |
 | PPO Cold Start | 57.62% | 47.57% |
 
