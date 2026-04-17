@@ -61,6 +61,7 @@ if __name__ == "__main__":
             tensor_parallel_size=int(os.getenv("WORLD_SIZE", 1)),
             gpu_memory_utilization=0.85,   # use more GPU memory → bigger KV cache → better batching
             max_model_len=4096,
+            trust_remote_code=True,
         )
         sampling_params = SamplingParams(max_tokens=4096, temperature=0.0001)
 
