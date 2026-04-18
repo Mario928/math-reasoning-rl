@@ -1,0 +1,74 @@
+W0414 05:11:57.150000 140227098444928 torch/distributed/run.py:779] 
+W0414 05:11:57.150000 140227098444928 torch/distributed/run.py:779] *****************************************
+W0414 05:11:57.150000 140227098444928 torch/distributed/run.py:779] Setting OMP_NUM_THREADS environment variable for each process to be 1 in default, to avoid your system being overloaded, please further tune the variable for optimal performance in your application as needed. 
+W0414 05:11:57.150000 140227098444928 torch/distributed/run.py:779] *****************************************
+Normalize batch size by dp 4
+Flash Attention 2.0 only supports torch.float16 and torch.bfloat16 dtypes, but the current dype in Qwen2ForCausalLM is torch.float32. You should run training or inference using Automatic Mixed-Precision via the `with torch.autocast(device_type='torch_device'):` decorator, or load the model with the `torch_dtype` argument. Example: `model = AutoModel.from_pretrained("openai/whisper-tiny", attn_implementation="flash_attention_2", torch_dtype=torch.float16)`
+You are attempting to use Flash Attention 2.0 with a model not initialized on GPU. Make sure to move the model to GPU after initializing it on CPU with `model.to('cuda')`.
+Flash Attention 2.0 only supports torch.float16 and torch.bfloat16 dtypes, but the current dype in Qwen2ForCausalLM is torch.float32. You should run training or inference using Automatic Mixed-Precision via the `with torch.autocast(device_type='torch_device'):` decorator, or load the model with the `torch_dtype` argument. Example: `model = AutoModel.from_pretrained("openai/whisper-tiny", attn_implementation="flash_attention_2", torch_dtype=torch.float16)`
+You are attempting to use Flash Attention 2.0 with a model not initialized on GPU. Make sure to move the model to GPU after initializing it on CPU with `model.to('cuda')`.
+Flash Attention 2.0 only supports torch.float16 and torch.bfloat16 dtypes, but the current dype in Qwen2ForCausalLM is torch.float32. You should run training or inference using Automatic Mixed-Precision via the `with torch.autocast(device_type='torch_device'):` decorator, or load the model with the `torch_dtype` argument. Example: `model = AutoModel.from_pretrained("openai/whisper-tiny", attn_implementation="flash_attention_2", torch_dtype=torch.float16)`
+You are attempting to use Flash Attention 2.0 with a model not initialized on GPU. Make sure to move the model to GPU after initializing it on CPU with `model.to('cuda')`.
+Flash Attention 2.0 only supports torch.float16 and torch.bfloat16 dtypes, but the current dype in Qwen2ForCausalLM is torch.float32. You should run training or inference using Automatic Mixed-Precision via the `with torch.autocast(device_type='torch_device'):` decorator, or load the model with the `torch_dtype` argument. Example: `model = AutoModel.from_pretrained("openai/whisper-tiny", attn_implementation="flash_attention_2", torch_dtype=torch.float16)`
+You are attempting to use Flash Attention 2.0 with a model not initialized on GPU. Make sure to move the model to GPU after initializing it on CPU with `model.to('cuda')`.
+functools.partial(<function transformer_auto_wrap_policy at 0x7f16e23d0820>, transformer_layer_cls={<class 'transformers.models.qwen2.modeling_qwen2.Qwen2DecoderLayer'>})
+NCCL version 2.20.5+cuda12.4
+Number of steps/epoch 5, number of epochs 2, total number of steps 10
+{'data': {'train_batch_size': 16, 'micro_batch_size': 2, 'train_files': '/workspace/dataset/rlla_sft/train.parquet', 'val_files': '/workspace/dataset/rlla_sft/val.parquet', 'prompt_key': 'prompt', 'response_key': 'response', 'max_length': 1024, 'truncation': 'right', 'balance_dp_token': False, 'chat_template': None}, 'model': {'partial_pretrain': '/app/models/Qwen2.5-1.5B-Instruct', 'fsdp_config': {'wrap_policy': {'min_num_params': 0}, 'cpu_offload': False, 'offload_params': False}, 'external_lib': None, 'enable_gradient_checkpointing': True, 'trust_remote_code': False}, 'optim': {'lr': 2.521779873497098e-06, 'betas': [0.9, 0.95], 'weight_decay': 0.08794642507197852, 'warmup_steps_ratio': 0.07013780946533073, 'clip_grad': 1.0}, 'trainer': {'default_local_dir': '/workspace/sweep_checkpoints/optuna_1.5b_400_trial000', 'default_hdfs_dir': 'hdfs://tmp/experiments/gsm8k/gemma-1.1-7b-it/', 'resume_path': None, 'project_name': 'sft-optuna-1.5b-400', 'experiment_name': 'optuna_1.5b_400_trial000', 'total_epochs': 2, 'logger': ['mlflow'], 'seed': 1}}
+/usr/local/lib/python3.10/dist-packages/torch/utils/checkpoint.py:1399: FutureWarning: `torch.cpu.amp.autocast(args...)` is deprecated. Please use `torch.amp.autocast('cpu', args...)` instead.
+  with device_autocast_ctx, torch.cpu.amp.autocast(**cpu_autocast_kwargs), recompute_context:  # type: ignore[attr-defined]
+/usr/local/lib/python3.10/dist-packages/torch/utils/checkpoint.py:1399: FutureWarning: `torch.cpu.amp.autocast(args...)` is deprecated. Please use `torch.amp.autocast('cpu', args...)` instead.
+  with device_autocast_ctx, torch.cpu.amp.autocast(**cpu_autocast_kwargs), recompute_context:  # type: ignore[attr-defined]
+/usr/local/lib/python3.10/dist-packages/torch/utils/checkpoint.py:1399: FutureWarning: `torch.cpu.amp.autocast(args...)` is deprecated. Please use `torch.amp.autocast('cpu', args...)` instead.
+  with device_autocast_ctx, torch.cpu.amp.autocast(**cpu_autocast_kwargs), recompute_context:  # type: ignore[attr-defined]
+/usr/local/lib/python3.10/dist-packages/torch/utils/checkpoint.py:1399: FutureWarning: `torch.cpu.amp.autocast(args...)` is deprecated. Please use `torch.amp.autocast('cpu', args...)` instead.
+  with device_autocast_ctx, torch.cpu.amp.autocast(**cpu_autocast_kwargs), recompute_context:  # type: ignore[attr-defined]
+W0414 05:25:19.659000 140227098444928 torch/distributed/elastic/agent/server/api.py:688] Received Signals.SIGTERM death signal, shutting down workers
+W0414 05:25:19.669000 140227098444928 torch/distributed/elastic/multiprocessing/api.py:858] Sending process 303976 closing signal SIGTERM
+W0414 05:25:19.670000 140227098444928 torch/distributed/elastic/multiprocessing/api.py:858] Sending process 303977 closing signal SIGTERM
+W0414 05:25:19.671000 140227098444928 torch/distributed/elastic/multiprocessing/api.py:858] Sending process 303978 closing signal SIGTERM
+W0414 05:25:19.672000 140227098444928 torch/distributed/elastic/multiprocessing/api.py:858] Sending process 303979 closing signal SIGTERM
+W0414 05:25:19.765000 140227098444928 torch/distributed/elastic/multiprocessing/api.py:858] Sending process 303977 closing signal SIGTERM
+W0414 05:25:19.766000 140227098444928 torch/distributed/elastic/multiprocessing/api.py:858] Sending process 303978 closing signal SIGTERM
+W0414 05:25:19.766000 140227098444928 torch/distributed/elastic/multiprocessing/api.py:858] Sending process 303979 closing signal SIGTERM
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.10/dist-packages/torch/distributed/elastic/agent/server/api.py", line 680, in run
+    result = self._invoke_run(role)
+  File "/usr/local/lib/python3.10/dist-packages/torch/distributed/elastic/agent/server/api.py", line 835, in _invoke_run
+    time.sleep(monitor_interval)
+  File "/usr/local/lib/python3.10/dist-packages/torch/distributed/elastic/multiprocessing/api.py", line 79, in _terminate_process_handler
+    raise SignalException(f"Process {os.getpid()} got signal: {sigval}", sigval=sigval)
+torch.distributed.elastic.multiprocessing.api.SignalException: Process 303910 got signal: 15
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/usr/local/bin/torchrun", line 8, in <module>
+    sys.exit(main())
+  File "/usr/local/lib/python3.10/dist-packages/torch/distributed/elastic/multiprocessing/errors/__init__.py", line 348, in wrapper
+    return f(*args, **kwargs)
+  File "/usr/local/lib/python3.10/dist-packages/torch/distributed/run.py", line 901, in main
+    run(args)
+  File "/usr/local/lib/python3.10/dist-packages/torch/distributed/run.py", line 892, in run
+    elastic_launch(
+  File "/usr/local/lib/python3.10/dist-packages/torch/distributed/launcher/api.py", line 133, in __call__
+    return launch_agent(self._config, self._entrypoint, list(args))
+  File "/usr/local/lib/python3.10/dist-packages/torch/distributed/launcher/api.py", line 255, in launch_agent
+    result = agent.run()
+  File "/usr/local/lib/python3.10/dist-packages/torch/distributed/elastic/metrics/api.py", line 124, in wrapper
+    result = f(*args, **kwargs)
+  File "/usr/local/lib/python3.10/dist-packages/torch/distributed/elastic/agent/server/api.py", line 689, in run
+    self._shutdown(e.sigval)
+  File "/usr/local/lib/python3.10/dist-packages/torch/distributed/elastic/agent/server/local_elastic_agent.py", line 347, in _shutdown
+    self._pcontext.close(death_sig)
+  File "/usr/local/lib/python3.10/dist-packages/torch/distributed/elastic/multiprocessing/api.py", line 544, in close
+    self._close(death_sig=death_sig, timeout=timeout)
+  File "/usr/local/lib/python3.10/dist-packages/torch/distributed/elastic/multiprocessing/api.py", line 868, in _close
+    handler.proc.wait(time_to_wait)
+  File "/usr/lib/python3.10/subprocess.py", line 1209, in wait
+    return self._wait(timeout=timeout)
+  File "/usr/lib/python3.10/subprocess.py", line 1953, in _wait
+    time.sleep(delay)
+  File "/usr/local/lib/python3.10/dist-packages/torch/distributed/elastic/multiprocessing/api.py", line 79, in _terminate_process_handler
+    raise SignalException(f"Process {os.getpid()} got signal: {sigval}", sigval=sigval)
+torch.distributed.elastic.multiprocessing.api.SignalException: Process 303910 got signal: 15

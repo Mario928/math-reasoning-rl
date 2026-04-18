@@ -1,0 +1,186 @@
+Normalize batch size by dp 1
+Flash Attention 2.0 only supports torch.float16 and torch.bfloat16 dtypes, but the current dype in Qwen2ForCausalLM is torch.float32. You should run training or inference using Automatic Mixed-Precision via the `with torch.autocast(device_type='torch_device'):` decorator, or load the model with the `torch_dtype` argument. Example: `model = AutoModel.from_pretrained("openai/whisper-tiny", attn_implementation="flash_attention_2", torch_dtype=torch.float16)`
+You are attempting to use Flash Attention 2.0 with a model not initialized on GPU. Make sure to move the model to GPU after initializing it on CPU with `model.to('cuda')`.
+functools.partial(<function transformer_auto_wrap_policy at 0x7fd0430e89d0>, transformer_layer_cls={<class 'transformers.models.qwen2.modeling_qwen2.Qwen2DecoderLayer'>})
+/usr/local/lib/python3.10/dist-packages/torch/distributed/fsdp/_init_utils.py:440: UserWarning: FSDP is switching to use `NO_SHARD` instead of ShardingStrategy.FULL_SHARD since the world size is 1.
+  warnings.warn(
+NCCL version 2.20.5+cuda12.4
+Number of steps/epoch 23, number of epochs 5, total number of steps 115
+{'data': {'train_batch_size': 16, 'micro_batch_size': 8, 'train_files': '/workspace/dataset/rlla_sft/train.parquet', 'val_files': '/workspace/dataset/rlla_sft/val.parquet', 'prompt_key': 'prompt', 'response_key': 'response', 'max_length': 2048, 'truncation': 'right', 'balance_dp_token': False, 'chat_template': None}, 'model': {'partial_pretrain': '/app/models/Qwen2.5-1.5B-Instruct', 'fsdp_config': {'wrap_policy': {'min_num_params': 0}, 'cpu_offload': False, 'offload_params': False}, 'external_lib': None, 'enable_gradient_checkpointing': True, 'trust_remote_code': False}, 'optim': {'lr': 5e-06, 'betas': [0.9, 0.95], 'weight_decay': 0.01, 'warmup_steps_ratio': 0.1, 'clip_grad': 1.0}, 'trainer': {'default_local_dir': '/workspace/sweep_checkpoints/qwen2.5-1.5b/sft_lr5e-6_len2048_ep5_bs16', 'default_hdfs_dir': 'hdfs://tmp/experiments/gsm8k/gemma-1.1-7b-it/', 'resume_path': None, 'project_name': 'toolrl-sft-sweep', 'experiment_name': 'sft_lr5e-6_len2048_ep5_bs16', 'total_epochs': 5, 'logger': ['console'], 'seed': 1}}
+Using LocalLogger is deprecated. The constructor API will change 
+/usr/local/lib/python3.10/dist-packages/torch/utils/checkpoint.py:1399: FutureWarning: `torch.cpu.amp.autocast(args...)` is deprecated. Please use `torch.amp.autocast('cpu', args...)` instead.
+  with device_autocast_ctx, torch.cpu.amp.autocast(**cpu_autocast_kwargs), recompute_context:  # type: ignore[attr-defined]
+step:0 - train/loss:1.293 - train/lr(1e-3):0.000
+step:1 - train/loss:1.441 - train/lr(1e-3):0.001
+step:2 - train/loss:1.371 - train/lr(1e-3):0.001
+step:3 - train/loss:1.305 - train/lr(1e-3):0.002
+step:4 - train/loss:1.395 - train/lr(1e-3):0.002
+step:5 - train/loss:1.379 - train/lr(1e-3):0.003
+step:6 - train/loss:1.324 - train/lr(1e-3):0.003
+step:7 - train/loss:1.293 - train/lr(1e-3):0.004
+step:8 - train/loss:1.242 - train/lr(1e-3):0.004
+step:9 - train/loss:1.141 - train/lr(1e-3):0.005
+step:10 - train/loss:1.188 - train/lr(1e-3):0.005
+step:11 - train/loss:1.098 - train/lr(1e-3):0.005
+step:12 - train/loss:1.324 - train/lr(1e-3):0.005
+step:13 - train/loss:1.328 - train/lr(1e-3):0.005
+step:14 - train/loss:1.043 - train/lr(1e-3):0.005
+step:15 - train/loss:0.979 - train/lr(1e-3):0.005
+step:16 - train/loss:0.920 - train/lr(1e-3):0.005
+step:17 - train/loss:1.033 - train/lr(1e-3):0.005
+step:18 - train/loss:0.965 - train/lr(1e-3):0.005
+step:19 - train/loss:1.016 - train/lr(1e-3):0.005
+step:20 - train/loss:0.811 - train/lr(1e-3):0.005
+step:21 - train/loss:0.867 - train/lr(1e-3):0.005
+step:22 - train/loss:0.836 - train/lr(1e-3):0.005
+step:23 - val/loss:0.789
+/usr/local/lib/python3.10/dist-packages/torch/distributed/fsdp/fully_sharded_data_parallel.py:689: FutureWarning: FSDP.state_dict_type() and FSDP.set_state_dict_type() are being deprecated. Please use APIs, get_state_dict() and set_state_dict(), which can support different parallelisms, FSDP1, FSDP2, DDP. API doc: https://pytorch.org/docs/stable/distributed.checkpoint.html#torch.distributed.checkpoint.state_dict.get_state_dict .Tutorial: https://pytorch.org/tutorials/recipes/distributed_checkpoint_recipe.html .
+  warnings.warn(
+/usr/local/lib/python3.10/dist-packages/torch/distributed/fsdp/_state_dict_utils.py:773: UserWarning: When using ``NO_SHARD`` for ``ShardingStrategy``, full_state_dict willbe returned.
+  warnings.warn(
+/usr/local/lib/python3.10/dist-packages/torch/distributed/fsdp/_state_dict_utils.py:716: UserWarning: When using ``NO_SHARD`` for ``ShardingStrategy``, full_state_dict willbe returned.
+  warnings.warn(
+sh: 1: None: not found
+sh: 1: None: not found
+/usr/local/lib/python3.10/dist-packages/torch/utils/checkpoint.py:1399: FutureWarning: `torch.cpu.amp.autocast(args...)` is deprecated. Please use `torch.amp.autocast('cpu', args...)` instead.
+  with device_autocast_ctx, torch.cpu.amp.autocast(**cpu_autocast_kwargs), recompute_context:  # type: ignore[attr-defined]
+step:23 - train/loss:1.008 - train/lr(1e-3):0.005
+step:24 - train/loss:0.775 - train/lr(1e-3):0.005
+step:25 - train/loss:0.891 - train/lr(1e-3):0.005
+step:26 - train/loss:0.979 - train/lr(1e-3):0.005
+step:27 - train/loss:0.814 - train/lr(1e-3):0.005
+step:28 - train/loss:0.736 - train/lr(1e-3):0.005
+step:29 - train/loss:0.738 - train/lr(1e-3):0.005
+step:30 - train/loss:0.775 - train/lr(1e-3):0.005
+step:31 - train/loss:0.785 - train/lr(1e-3):0.005
+step:32 - train/loss:0.781 - train/lr(1e-3):0.004
+step:33 - train/loss:0.693 - train/lr(1e-3):0.004
+step:34 - train/loss:0.645 - train/lr(1e-3):0.004
+step:35 - train/loss:0.730 - train/lr(1e-3):0.004
+step:36 - train/loss:0.824 - train/lr(1e-3):0.004
+step:37 - train/loss:0.811 - train/lr(1e-3):0.004
+step:38 - train/loss:0.824 - train/lr(1e-3):0.004
+step:39 - train/loss:0.766 - train/lr(1e-3):0.004
+step:40 - train/loss:0.650 - train/lr(1e-3):0.004
+step:41 - train/loss:0.676 - train/lr(1e-3):0.004
+step:42 - train/loss:0.873 - train/lr(1e-3):0.004
+step:43 - train/loss:0.703 - train/lr(1e-3):0.004
+step:44 - train/loss:0.750 - train/lr(1e-3):0.004
+step:45 - train/loss:0.770 - train/lr(1e-3):0.004
+step:46 - val/loss:0.695
+/usr/local/lib/python3.10/dist-packages/torch/distributed/fsdp/fully_sharded_data_parallel.py:689: FutureWarning: FSDP.state_dict_type() and FSDP.set_state_dict_type() are being deprecated. Please use APIs, get_state_dict() and set_state_dict(), which can support different parallelisms, FSDP1, FSDP2, DDP. API doc: https://pytorch.org/docs/stable/distributed.checkpoint.html#torch.distributed.checkpoint.state_dict.get_state_dict .Tutorial: https://pytorch.org/tutorials/recipes/distributed_checkpoint_recipe.html .
+  warnings.warn(
+/usr/local/lib/python3.10/dist-packages/torch/distributed/fsdp/_state_dict_utils.py:773: UserWarning: When using ``NO_SHARD`` for ``ShardingStrategy``, full_state_dict willbe returned.
+  warnings.warn(
+/usr/local/lib/python3.10/dist-packages/torch/distributed/fsdp/_state_dict_utils.py:716: UserWarning: When using ``NO_SHARD`` for ``ShardingStrategy``, full_state_dict willbe returned.
+  warnings.warn(
+sh: 1: None: not found
+sh: 1: None: not found
+/usr/local/lib/python3.10/dist-packages/torch/utils/checkpoint.py:1399: FutureWarning: `torch.cpu.amp.autocast(args...)` is deprecated. Please use `torch.amp.autocast('cpu', args...)` instead.
+  with device_autocast_ctx, torch.cpu.amp.autocast(**cpu_autocast_kwargs), recompute_context:  # type: ignore[attr-defined]
+step:46 - train/loss:0.658 - train/lr(1e-3):0.004
+step:47 - train/loss:0.598 - train/lr(1e-3):0.004
+step:48 - train/loss:0.674 - train/lr(1e-3):0.004
+step:49 - train/loss:0.584 - train/lr(1e-3):0.003
+step:50 - train/loss:0.594 - train/lr(1e-3):0.003
+step:51 - train/loss:0.723 - train/lr(1e-3):0.003
+step:52 - train/loss:0.592 - train/lr(1e-3):0.003
+step:53 - train/loss:0.619 - train/lr(1e-3):0.003
+step:54 - train/loss:0.582 - train/lr(1e-3):0.003
+step:55 - train/loss:0.611 - train/lr(1e-3):0.003
+step:56 - train/loss:0.658 - train/lr(1e-3):0.003
+step:57 - train/loss:0.578 - train/lr(1e-3):0.003
+step:58 - train/loss:0.742 - train/lr(1e-3):0.003
+step:59 - train/loss:0.740 - train/lr(1e-3):0.003
+step:60 - train/loss:0.676 - train/lr(1e-3):0.003
+step:61 - train/loss:0.617 - train/lr(1e-3):0.003
+step:62 - train/loss:0.607 - train/lr(1e-3):0.003
+step:63 - train/loss:0.684 - train/lr(1e-3):0.002
+step:64 - train/loss:0.641 - train/lr(1e-3):0.002
+step:65 - train/loss:0.558 - train/lr(1e-3):0.002
+step:66 - train/loss:0.697 - train/lr(1e-3):0.002
+step:67 - train/loss:0.695 - train/lr(1e-3):0.002
+step:68 - train/loss:0.621 - train/lr(1e-3):0.002
+step:69 - val/loss:0.672
+/usr/local/lib/python3.10/dist-packages/torch/distributed/fsdp/fully_sharded_data_parallel.py:689: FutureWarning: FSDP.state_dict_type() and FSDP.set_state_dict_type() are being deprecated. Please use APIs, get_state_dict() and set_state_dict(), which can support different parallelisms, FSDP1, FSDP2, DDP. API doc: https://pytorch.org/docs/stable/distributed.checkpoint.html#torch.distributed.checkpoint.state_dict.get_state_dict .Tutorial: https://pytorch.org/tutorials/recipes/distributed_checkpoint_recipe.html .
+  warnings.warn(
+/usr/local/lib/python3.10/dist-packages/torch/distributed/fsdp/_state_dict_utils.py:773: UserWarning: When using ``NO_SHARD`` for ``ShardingStrategy``, full_state_dict willbe returned.
+  warnings.warn(
+/usr/local/lib/python3.10/dist-packages/torch/distributed/fsdp/_state_dict_utils.py:716: UserWarning: When using ``NO_SHARD`` for ``ShardingStrategy``, full_state_dict willbe returned.
+  warnings.warn(
+sh: 1: None: not found
+sh: 1: None: not found
+/usr/local/lib/python3.10/dist-packages/torch/utils/checkpoint.py:1399: FutureWarning: `torch.cpu.amp.autocast(args...)` is deprecated. Please use `torch.amp.autocast('cpu', args...)` instead.
+  with device_autocast_ctx, torch.cpu.amp.autocast(**cpu_autocast_kwargs), recompute_context:  # type: ignore[attr-defined]
+step:69 - train/loss:0.645 - train/lr(1e-3):0.002
+step:70 - train/loss:0.522 - train/lr(1e-3):0.002
+step:71 - train/loss:0.521 - train/lr(1e-3):0.002
+step:72 - train/loss:0.520 - train/lr(1e-3):0.002
+step:73 - train/loss:0.545 - train/lr(1e-3):0.002
+step:74 - train/loss:0.584 - train/lr(1e-3):0.002
+step:75 - train/loss:0.479 - train/lr(1e-3):0.002
+step:76 - train/loss:0.539 - train/lr(1e-3):0.001
+step:77 - train/loss:0.506 - train/lr(1e-3):0.001
+step:78 - train/loss:0.586 - train/lr(1e-3):0.001
+step:79 - train/loss:0.539 - train/lr(1e-3):0.001
+step:80 - train/loss:0.674 - train/lr(1e-3):0.001
+step:81 - train/loss:0.493 - train/lr(1e-3):0.001
+step:82 - train/loss:0.559 - train/lr(1e-3):0.001
+step:83 - train/loss:0.656 - train/lr(1e-3):0.001
+step:84 - train/loss:0.580 - train/lr(1e-3):0.001
+step:85 - train/loss:0.576 - train/lr(1e-3):0.001
+step:86 - train/loss:0.532 - train/lr(1e-3):0.001
+step:87 - train/loss:0.499 - train/lr(1e-3):0.001
+step:88 - train/loss:0.509 - train/lr(1e-3):0.001
+step:89 - train/loss:0.520 - train/lr(1e-3):0.001
+step:90 - train/loss:0.512 - train/lr(1e-3):0.001
+step:91 - train/loss:0.609 - train/lr(1e-3):0.001
+step:92 - val/loss:0.680
+/usr/local/lib/python3.10/dist-packages/torch/distributed/fsdp/fully_sharded_data_parallel.py:689: FutureWarning: FSDP.state_dict_type() and FSDP.set_state_dict_type() are being deprecated. Please use APIs, get_state_dict() and set_state_dict(), which can support different parallelisms, FSDP1, FSDP2, DDP. API doc: https://pytorch.org/docs/stable/distributed.checkpoint.html#torch.distributed.checkpoint.state_dict.get_state_dict .Tutorial: https://pytorch.org/tutorials/recipes/distributed_checkpoint_recipe.html .
+  warnings.warn(
+/usr/local/lib/python3.10/dist-packages/torch/distributed/fsdp/_state_dict_utils.py:773: UserWarning: When using ``NO_SHARD`` for ``ShardingStrategy``, full_state_dict willbe returned.
+  warnings.warn(
+/usr/local/lib/python3.10/dist-packages/torch/distributed/fsdp/_state_dict_utils.py:716: UserWarning: When using ``NO_SHARD`` for ``ShardingStrategy``, full_state_dict willbe returned.
+  warnings.warn(
+sh: 1: None: not found
+sh: 1: None: not found
+/usr/local/lib/python3.10/dist-packages/torch/utils/checkpoint.py:1399: FutureWarning: `torch.cpu.amp.autocast(args...)` is deprecated. Please use `torch.amp.autocast('cpu', args...)` instead.
+  with device_autocast_ctx, torch.cpu.amp.autocast(**cpu_autocast_kwargs), recompute_context:  # type: ignore[attr-defined]
+step:92 - train/loss:0.535 - train/lr(1e-3):0.001
+step:93 - train/loss:0.444 - train/lr(1e-3):0.000
+step:94 - train/loss:0.484 - train/lr(1e-3):0.000
+step:95 - train/loss:0.459 - train/lr(1e-3):0.000
+step:96 - train/loss:0.503 - train/lr(1e-3):0.000
+step:97 - train/loss:0.487 - train/lr(1e-3):0.000
+step:98 - train/loss:0.445 - train/lr(1e-3):0.000
+step:99 - train/loss:0.557 - train/lr(1e-3):0.000
+step:100 - train/loss:0.510 - train/lr(1e-3):0.000
+step:101 - train/loss:0.502 - train/lr(1e-3):0.000
+step:102 - train/loss:0.652 - train/lr(1e-3):0.000
+step:103 - train/loss:0.529 - train/lr(1e-3):0.000
+step:104 - train/loss:0.553 - train/lr(1e-3):0.000
+step:105 - train/loss:0.513 - train/lr(1e-3):0.000
+step:106 - train/loss:0.585 - train/lr(1e-3):0.000
+step:107 - train/loss:0.404 - train/lr(1e-3):0.000
+step:108 - train/loss:0.527 - train/lr(1e-3):0.000
+step:109 - train/loss:0.520 - train/lr(1e-3):0.000
+step:110 - train/loss:0.551 - train/lr(1e-3):0.000
+step:111 - train/loss:0.528 - train/lr(1e-3):0.000
+step:112 - train/loss:0.549 - train/lr(1e-3):0.000
+step:113 - train/loss:0.609 - train/lr(1e-3):0.000
+step:114 - train/loss:0.483 - train/lr(1e-3):0.000
+step:115 - val/loss:0.680
+/usr/local/lib/python3.10/dist-packages/torch/distributed/fsdp/fully_sharded_data_parallel.py:689: FutureWarning: FSDP.state_dict_type() and FSDP.set_state_dict_type() are being deprecated. Please use APIs, get_state_dict() and set_state_dict(), which can support different parallelisms, FSDP1, FSDP2, DDP. API doc: https://pytorch.org/docs/stable/distributed.checkpoint.html#torch.distributed.checkpoint.state_dict.get_state_dict .Tutorial: https://pytorch.org/tutorials/recipes/distributed_checkpoint_recipe.html .
+  warnings.warn(
+/usr/local/lib/python3.10/dist-packages/torch/distributed/fsdp/_state_dict_utils.py:773: UserWarning: When using ``NO_SHARD`` for ``ShardingStrategy``, full_state_dict willbe returned.
+  warnings.warn(
+/usr/local/lib/python3.10/dist-packages/torch/distributed/fsdp/_state_dict_utils.py:716: UserWarning: When using ``NO_SHARD`` for ``ShardingStrategy``, full_state_dict willbe returned.
+  warnings.warn(
+sh: 1: None: not found
+sh: 1: None: not found
+[rank0]:[W412 08:42:58.412669776 ProcessGroupNCCL.cpp:1168] Warning: WARNING: process group has NOT been destroyed before we destruct ProcessGroupNCCL. On normal program exit, the application should call destroy_process_group to ensure that any pending NCCL operations have finished in this process. In rare cases this process can exit before this point and block the progress of another member of the process group. This constraint has always been present,  but this warning has only been added since PyTorch 2.4 (function operator())
+/usr/local/lib/python3.10/dist-packages/vllm/connections.py:8: RuntimeWarning: Failed to read commit hash:
+No module named 'vllm._version'
+  from vllm.version import __version__ as VLLM_VERSION
+usage: generate.py [-h] [--model_paths MODEL_PATHS]
+generate.py: error: unrecognized arguments: --output_path /workspace/sweep_results/qwen2.5-1.5b/apibank_sft_lr5e-6_len2048_ep5_bs16.json
