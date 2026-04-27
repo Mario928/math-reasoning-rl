@@ -1,4 +1,5 @@
 Rank,Model,Non-Live Overall Acc,AST Summary,Simple AST,Python Simple AST,Java Simple AST,JavaScript Simple AST,Multiple AST,Parallel AST,Parallel Multiple AST,Irrelevance Detection
 1,ToolRL PPO Qwen2.5-3B Cold Start,84.12%,84.12%,77.00%,91.00%,64.00%,76.00%,92.50%,85.00%,82.00%,81.25%
-2,ToolRL GRPO Qwen2.5-1.5B Cold Start,77.25%,77.25%,71.00%,90.00%,59.00%,64.00%,84.00%,83.00%,71.00%,14.58%
-3,ToolRL GRPO Qwen2.5-1.5B SFT400 Warm Start,66.38%,66.38%,62.50%,78.50%,53.00%,56.00%,77.50%,70.00%,55.50%,58.33%
+2,ToolRL PPO Qwen2.5-1.5B Cold Start Run2,81.27%,81.27%,74.58%,90.75%,65.00%,68.00%,87.50%,83.50%,79.50%,33.75%
+3,ToolRL GRPO Qwen2.5-1.5B Cold Start,77.25%,77.25%,71.00%,90.00%,59.00%,64.00%,84.00%,83.00%,71.00%,14.58%
+4,ToolRL GRPO Qwen2.5-1.5B SFT400 Warm Start,66.38%,66.38%,62.50%,78.50%,53.00%,56.00%,77.50%,70.00%,55.50%,58.33%
