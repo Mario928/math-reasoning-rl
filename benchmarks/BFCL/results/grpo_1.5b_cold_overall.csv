@@ -1,0 +1,2 @@
+Rank,Overall Acc,Model,Non-Live AST Acc,Non-Live Simple AST,Non-Live Multiple AST,Non-Live Parallel AST,Non-Live Parallel Multiple AST,Live Acc,Live Simple AST,Live Multiple AST,Live Parallel AST,Live Parallel Multiple AST,Relevance Detection,Irrelevance Detection
+1,15.39%,ToolRL GRPO Qwen2.5-1.5B Cold Start,77.42%,70.67%,84.50%,83.00%,71.50%,64.69%,74.81%,62.39%,56.25%,62.50%,100.00%,11.81%
