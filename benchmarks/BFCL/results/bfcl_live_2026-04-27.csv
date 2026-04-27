@@ -1,0 +1,3 @@
+Rank,Model,Live Overall Acc,AST Summary,Python Simple AST,Python Multiple AST,Python Parallel AST,Python Parallel Multiple AST,Irrelevance Detection,Relevance Detection
+1,ToolRL GRPO Qwen2.5-1.5B Cold Start,64.69%,64.69%,74.81%,62.39%,56.25%,62.50%,10.41%,100.00%
+2,ToolRL GRPO Qwen2.5-1.5B SFT400 Warm Start,54.55%,54.55%,62.02%,52.90%,62.50%,41.67%,54.41%,100.00%
